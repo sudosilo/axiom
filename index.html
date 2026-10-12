@@ -418,6 +418,7 @@
   <div class="panel" id="band-panel" hidden>
     <div class="panel-label">Band · same room code on every phone</div>
     <div class="band-row">
+      <button class="seq-btn" id="band-play">▶ PLAY</button>
       <input type="text" class="bpm-input band-room" id="band-room" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="room code" aria-label="Room code">
       <div class="band-status"><div class="status-dot" id="dot-band"></div><span id="band-status">band off</span></div>
       <div class="band-status" id="band-clock">clock off</div>
@@ -1016,6 +1017,10 @@ function startSeq() {
   const b = document.getElementById('btn-play-seq');
   b.textContent = '■ STOP';
   b.classList.add('playing');
+  // ORANGE PHONE: v3 the Band panel has its own copy of the play button
+  const b2 = document.getElementById('band-play');
+  b2.textContent = '■ STOP';
+  b2.classList.add('playing');
   bandOnPlay();
 }
 
@@ -1027,6 +1032,9 @@ function stopSeq() {
   const b = document.getElementById('btn-play-seq');
   b.textContent = '▶ PLAY';
   b.classList.remove('playing');
+  const b2 = document.getElementById('band-play');
+  b2.textContent = '▶ PLAY';
+  b2.classList.remove('playing');
 }
 
 function restartSeqFromTop() {
@@ -1037,6 +1045,7 @@ function restartSeqFromTop() {
 }
 
 document.getElementById('btn-play-seq').addEventListener('click', () => { if (seqPlaying) stopSeq(); else startSeq(); });
+document.getElementById('band-play').addEventListener('click', () => { if (seqPlaying) stopSeq(); else startSeq(); });
 document.getElementById('btn-clear-seq').addEventListener('click', () => {
   seqGrid = Array.from({ length: SEQ_ROWS }, () => Array(SEQ_STEPS).fill(false));
   renderGrid();
@@ -1619,8 +1628,8 @@ function renderBand() {
   let text = st === 'off' ? 'band off' : st === 'no room' ? 'type a room code' : st;
   if (st === 'live') {
     text = bandPhones + (bandPhones === 1 ? ' phone' : ' phones') + ' in room, ';
-    if (bandRoom && bandRoom.playing) text += seqPlaying ? 'locked to band at ' + bpm + ' bpm' : 'band is playing, tap PLAY to join';
-    else text += bandRoom && bandRoom.idle ? 'paused, no player' : 'band stopped, tap PLAY to start';
+    if (bandRoom && bandRoom.playing) text += seqPlaying ? 'locked to band at ' + bpm + ' bpm' : 'band is playing, tap PLAY here to join';
+    else text += bandRoom && bandRoom.idle ? 'paused, no player' : 'band stopped, tap PLAY here to start';
   }
   document.getElementById('band-status').textContent = text;
   document.getElementById('band-clock').textContent = bandClock.synced ? 'clock locked, trip ' + Math.round(bandClock.rtt) + ' ms' : 'clock off';
